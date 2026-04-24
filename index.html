@@ -128,13 +128,47 @@
     </footer>
     
     <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbxQkyYUiWqU5z-lKZE01EilSPXtAFlDp0VyWBJ0FpdjJQ2CclJjMzPK80jk9Z6zVqs/exec';
         const form = document.getElementById('contact-form');
         const responseMsg = document.getElementById('form-response');
 
         form.addEventListener('submit', e => {
             e.preventDefault();
-            window.open('https://docs.google.com/forms/d/e/1FAIpQLScoFBv2btEZuUxOHlwIeGBzH8ADnGqirZBmX162hVP5rgm6dw/viewform?usp=pp_url&entry.110809525=Nabi&entry.1342399023=kre8viar@gmail.com&entry.1108436809=5183304233&entry.1915892561=Hello', '_blank');
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const message = document.getElementById('message').value;
+
+            // Construct the prefilled Google Form URL dynamically based on user input
+            const baseUrl = 'https://docs.google.com/forms/d/e/1FAIpQLScoFBv2btEZuUxOHlwIeGBzH8ADnGqirZBmX162hVP5rgm6dw/viewform';
+            const params = new URLSearchParams({
+                'usp': 'pp_url',
+                'entry.110809525': name,
+                'entry.1342399023': email,
+                'entry.1108436809': phone,
+                'entry.1915892561': message
+            });
+
+            const finalUrl = `${baseUrl}?${params.toString()}`;
+
+            // Silently send the data in the background using a hidden iframe
+            const hiddenIframe = document.createElement('iframe');
+            hiddenIframe.style.display = 'none';
+            hiddenIframe.src = finalUrl;
+            document.body.appendChild(hiddenIframe);
+
+            // Provide user feedback
+            responseMsg.style.display = 'block';
+            responseMsg.innerText = 'Thank you! Your request has been sent. We will contact you shortly.';
+            responseMsg.style.backgroundColor = '#d4edda';
+            responseMsg.style.color = '#155724';
+            
+            form.reset();
+
+            // Cleanup iframe after a short delay
+            setTimeout(() => {
+                document.body.removeChild(hiddenIframe);
+            }, 2000);
         });
     </script>
 </body>
